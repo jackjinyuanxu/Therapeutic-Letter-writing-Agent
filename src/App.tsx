@@ -91,11 +91,17 @@ export const App: React.FC = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch {
+        // Non-JSON response (e.g., 404 HTML page)
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorMsg = data?.reply || data?.error || data?.message || `Server returned HTTP ${response.status}`;
+        throw new Error(errorMsg);
+      }
 
       if (data.currentStage) {
         setCurrentStage(data.currentStage as AgentStage);
@@ -121,19 +127,33 @@ export const App: React.FC = () => {
       };
 
       setMessages([...updatedMessages, assistantMsg]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in agent conversation:', error);
+      const isMissingKey = error?.message?.includes('GEMINI_API_KEY') || error?.message?.includes('MISSING_GEMINI_API_KEY');
+      const is404 = error?.message?.includes('404');
+
+      const fallbackContent = isMissingKey
+        ? error.message
+        : is404
+        ? "⚠️ Backend API route not reachable (HTTP 404).\n\nIf you deployed on Vercel, ensure that your repository includes `vercel.json` and the `/api/index.ts` serverless function, and that `GEMINI_API_KEY` is added under Project Settings → Environment Variables."
+        : "I'm here with you. Navigating these emotions takes patience. Could you tell me a bit more about what outcome would feel safest and most respectful for you?";
+
       const fallbackMsg: ChatMessage = {
         id: `assistant_fallback_${Date.now()}`,
         role: 'assistant',
-        content: `I'm here with you. Navigating these emotions takes patience. Could you tell me a bit more about what outcome would feel safest and most respectful for you?`,
+        content: fallbackContent,
         timestamp: Date.now(),
         stage: currentStage,
-        suggestedReplies: [
-          'I just want them to understand my side.',
-          'I want to resolve this without a fight.',
-          'Can we write the letter with what you know?',
-        ],
+        suggestedReplies: isMissingKey || is404
+          ? [
+              'Where do I add GEMINI_API_KEY on Vercel?',
+              'How do I test my deployment?',
+            ]
+          : [
+              'I just want them to understand my side.',
+              'I want to resolve this without a fight.',
+              'Can we write the letter with what you know?',
+            ],
       };
       setMessages([...updatedMessages, fallbackMsg]);
     } finally {
@@ -233,7 +253,16 @@ export const App: React.FC = () => {
         requestDraftNow: false,
       }),
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        let data: any = null;
+        try {
+          data = await res.json();
+        } catch {}
+        if (!res.ok) {
+          throw new Error(data?.reply || data?.error || `HTTP ${res.status}`);
+        }
+        return data;
+      })
       .then((data) => {
         if (data.currentStage) setCurrentStage(data.currentStage as AgentStage);
         if (data.stageTitle) setStageTitle(data.stageTitle);
@@ -252,6 +281,20 @@ export const App: React.FC = () => {
       })
       .catch((err) => {
         console.error('Scenario load error:', err);
+        const isMissingKey = err?.message?.includes('GEMINI_API_KEY');
+        const fallbackScenarioMsg: ChatMessage = {
+          id: `assistant_scenario_err_${Date.now()}`,
+          role: 'assistant',
+          content: isMissingKey
+            ? err.message
+            : `I understand this situation is challenging. Let's take a deep breath. Can you tell me what matters most to you in how this gets resolved?`,
+          timestamp: Date.now(),
+          stage: 2,
+          suggestedReplies: isMissingKey
+            ? ['Where do I add GEMINI_API_KEY on Vercel?']
+            : ['I want to protect our relationship.', 'I need to set a boundary.'],
+        };
+        setMessages([INITIAL_MESSAGE, initialScenarioMessage, fallbackScenarioMsg]);
       })
       .finally(() => {
         setIsThinking(false);

@@ -1,13 +1,24 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
-import { createServer as createViteServer } from 'vite';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: '1mb' }));
+
+// CORS & Preflight handling for deployments
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Lazy initialization of GoogleGenAI client
 let aiClient: GoogleGenAI | null = null;
@@ -65,10 +76,17 @@ async function generateWithRetry(params: any, retries = 2, delayMs = 1000): Prom
   }
 }
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
-});
+// Health check endpoint (accessible at /api/health and /health)
+const handleHealth = (req: express.Request, res: express.Response) => {
+  res.json({
+    status: 'ok',
+    hasApiKey: Boolean(process.env.GEMINI_API_KEY),
+    runtime: process.env.VERCEL ? 'vercel-serverless' : 'node-container',
+    time: new Date().toISOString(),
+  });
+};
+app.get('/api/health', handleHealth);
+app.get('/health', handleHealth);
 
 const THERAPEUTIC_LETTER_WRITER_SYSTEM_INSTRUCTION = `You are the Therapeutic Letter Writer agent.
 
@@ -137,8 +155,8 @@ Stage 6. Check with the user and revise based on additional context or concerns.
 
 You must ALWAYS respond with valid JSON matching the specified schema.`;
 
-// Primary Agent Chat Endpoint
-app.post('/api/agent/chat', async (req, res) => {
+// Primary Agent Chat Handler
+const handleChat = async (req: express.Request, res: express.Response) => {
   const {
     messages = [],
     currentStage = 1,
@@ -146,6 +164,23 @@ app.post('/api/agent/chat', async (req, res) => {
     currentDraft = null,
     requestDraftNow = false,
   } = req.body;
+
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('CRITICAL: GEMINI_API_KEY environment variable is not defined.');
+    return res.status(500).json({
+      error: 'MISSING_GEMINI_API_KEY',
+      reply: '⚠️ GEMINI_API_KEY is not configured in this deployment.\n\nTo make your agent work on Vercel:\n1. Open your Vercel Project Dashboard (vercel.com).\n2. Navigate to Settings → Environment Variables.\n3. Add `GEMINI_API_KEY` with your API key from Google AI Studio.\n4. Redeploy under Deployments → Redeploy.\n\nOnce added, your AI agent will respond dynamically to all inputs.',
+      currentStage: currentStage || 1,
+      stageTitle: 'Setup Required: Missing API Key',
+      suggestedReplies: [
+        'How do I add GEMINI_API_KEY on Vercel?',
+        'Where do I get a Gemini API key?',
+      ],
+      extractedContext: extractedContext || {},
+      isDraftReady: false,
+      draft: null,
+    });
+  }
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'No messages provided.' });
@@ -500,11 +535,23 @@ Draft a respectful, clear message that uses 'I' statements, avoids blaming, sets
       draft: fallbackDraft,
     });
   }
-});
+};
 
-// Agent Direct Revision Endpoint
-app.post('/api/agent/revise', async (req, res) => {
+// Register chat endpoint on both /api/agent/chat and /agent/chat for Vercel/proxy compatibility
+app.post('/api/agent/chat', handleChat);
+app.post('/agent/chat', handleChat);
+
+// Agent Direct Revision Handler
+const handleRevise = async (req: express.Request, res: express.Response) => {
   const { currentDraft, revisionDirective, customFeedback, extractedContext = {} } = req.body;
+
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(500).json({
+      error: 'MISSING_GEMINI_API_KEY',
+      agentNote: 'GEMINI_API_KEY is not configured in your deployment environment variables. Please add GEMINI_API_KEY in Vercel Settings → Environment Variables.',
+      draft: currentDraft,
+    });
+  }
 
   if (!currentDraft || !currentDraft.formattedMessage) {
     return res.status(400).json({ error: 'No draft provided to revise.' });
@@ -606,11 +653,16 @@ Provide an updated explanation of the strategy and how the revision may be recei
       agentNote: 'Unable to revise at this moment. You can directly edit the draft on the right.',
     });
   }
-});
+};
+
+// Register revise endpoint on both /api/agent/revise and /agent/revise for Vercel/proxy compatibility
+app.post('/api/agent/revise', handleRevise);
+app.post('/agent/revise', handleRevise);
 
 // Vite middleware or static serving
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -629,4 +681,9 @@ async function startServer() {
   });
 }
 
-startServer();
+// Start persistent server in container/local environments; export app for Vercel Serverless
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
