@@ -39,7 +39,7 @@ const STAGE_STEPS: { stage: AgentStage; label: string; desc: string }[] = [
   { stage: 2, label: 'Context & Events', desc: 'What happened & history' },
   { stage: 3, label: 'Conflict Cause', desc: 'Why the tension occurred' },
   { stage: 4, label: 'Goals & Boundaries', desc: 'What you need to accomplish' },
-  { stage: 5, label: 'Drafting', desc: 'Crafting the authentic message' },
+  { stage: 5, label: 'Letter Draft', desc: 'Crafting the authentic letter' },
   { stage: 6, label: 'Check & Revise', desc: 'Refining tone and boundaries' },
 ];
 
@@ -109,9 +109,9 @@ export const AgentChat: React.FC<AgentChatProps> = ({
   const hasUserMessages = messages.some((m) => m.role === 'user');
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
       {/* Stage Stepper Header */}
-      <div className="px-4 py-3 bg-stone-50/80 border-b border-stone-200">
+      <div className="shrink-0 px-4 py-3 bg-stone-50/80 border-b border-stone-200">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-stone-900 text-amber-300 text-xs font-bold">
@@ -166,7 +166,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 space-y-4 overscroll-contain">
         {messages.map((msg, index) => {
           const isAssistant = msg.role === 'assistant';
           const isLast = index === messages.length - 1;
@@ -398,7 +398,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="p-3 sm:p-4 bg-stone-50/90 border-t border-stone-200">
+      <div className="shrink-0 p-3 sm:p-4 bg-stone-50/90 border-t border-stone-200">
         {/* Action bar above input */}
         <div className="flex items-center justify-between mb-2 px-1">
           <div className="flex items-center space-x-2 text-[11px] text-stone-500">

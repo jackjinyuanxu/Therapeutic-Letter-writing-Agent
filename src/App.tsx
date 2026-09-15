@@ -197,7 +197,7 @@ export const App: React.FC = () => {
       const revisionNoteMsg: ChatMessage = {
         id: `assistant_rev_${Date.now()}`,
         role: 'assistant',
-        content: data.agentNote || `I have updated the letter with this revision: "${directive}". Take a look at the revised message in the canvas on the right.`,
+        content: data.agentNote || `I have updated the letter with this revision: "${directive}". Take a look at the revised letter in the canvas on the right.`,
         timestamp: Date.now(),
         stage: 6,
         suggestedReplies: [
@@ -338,7 +338,7 @@ export const App: React.FC = () => {
     : false;
 
   return (
-    <div className="min-h-screen bg-stone-100/70 text-stone-900 flex flex-col font-sans">
+    <div className="h-screen max-h-screen bg-stone-100/70 text-stone-900 flex flex-col font-sans overflow-hidden">
       {/* Header */}
       <Header
         onNewConversation={handleNewConversation}
@@ -351,7 +351,7 @@ export const App: React.FC = () => {
       />
 
       {/* Mobile Tab Switcher */}
-      <div className="lg:hidden px-4 pt-3 pb-1 bg-white border-b border-stone-200 flex items-center justify-center space-x-2">
+      <div className="lg:hidden shrink-0 px-4 pt-3 pb-2 bg-white border-b border-stone-200 flex items-center justify-center space-x-2">
         <button
           type="button"
           onClick={() => setMobileTab('chat')}
@@ -383,12 +383,12 @@ export const App: React.FC = () => {
       </div>
 
       {/* Main Two-Panel Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col min-h-0">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 flex-1 min-h-[calc(100vh-6rem)]">
+      <main className="flex-1 min-h-0 max-w-7xl w-full mx-auto p-2 sm:p-4 md:p-5 flex flex-col overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 md:gap-5 flex-1 min-h-0 h-full">
           {/* Left Panel: Agent Conversation */}
           <section
             aria-label="Agent Conversation"
-            className={`lg:col-span-7 flex flex-col h-[75vh] lg:h-full ${
+            className={`lg:col-span-7 flex flex-col h-full min-h-0 overflow-hidden ${
               mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'
             }`}
           >
@@ -411,7 +411,7 @@ export const App: React.FC = () => {
           {/* Right Panel: Working Letter Canvas & Analysis */}
           <section
             aria-label="Letter Canvas and Analysis"
-            className={`lg:col-span-5 flex flex-col h-[75vh] lg:h-full ${
+            className={`lg:col-span-5 flex flex-col h-full min-h-0 overflow-hidden ${
               mobileTab === 'chat' ? 'hidden lg:flex' : 'flex'
             }`}
           >

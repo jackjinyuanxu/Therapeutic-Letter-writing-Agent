@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   stageTitle,
 }) => {
   return (
-    <header className="no-print bg-white/95 backdrop-blur-xs border-b border-stone-200 sticky top-0 z-30 shadow-2xs">
+    <header className="no-print bg-white/95 backdrop-blur-xs border-b border-stone-200 sticky top-0 z-30 shadow-2xs shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-stone-900 text-stone-100 flex items-center justify-center shadow-xs">

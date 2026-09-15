@@ -134,8 +134,8 @@ Stage 6. Check with the user and revise based on additional context or concerns.
 
 ## Outputs
 * Empathetic, calm conversational responses.
-* A written letter/message appropriate to the situation (when ready in Stage 5 or 6, or requested).
-* Clarification of what the message communicates and how it may realistically be received.
+* A written personal letter by default (or user-requested format) appropriate to the situation (when ready in Stage 5 or 6, or requested). The default output is always a complete, thoughtfully composed letter with salutation, body paragraphs, and closing, rather than a brief message or chat note.
+* Clarification of what the letter communicates and how it may realistically be received.
 * Separate feelings, events, and assumptions (translations into grounded "I" experience).
 
 ## Knowledge Base Guidelines
@@ -205,17 +205,23 @@ CRITICAL INSTRUCTIONS:
 3. MANDATORY RULE FOR DRAFTING:
    - If currentStage is 5 or 6, OR if you advance currentStage to 5 or 6, OR if requestDraftNow is true:
      YOU MUST GENERATE AND POPULATE THE "draft" OBJECT!
-     "draft.formattedMessage" MUST contain the complete, beautifully composed message ready to send.
-     "draft.title" must be a descriptive title.
-     "draft.strategyExplanation" must explain how the message de-escalates conflict and protects boundaries.
-     "draft.howItMayBeReceived" must outline how the recipient is likely to perceive and react to this message.
+     CRITICAL DEFAULT: The final output MUST default to a thoughtful, authentic letter ("personal_letter") rather than a short message, SMS, or casual chat note, unless the user explicitly requested an SMS/text message.
+     A letter MUST include:
+       * A proper salutation (e.g. "Dear [Recipient],")
+       * Sincere, well-developed letter paragraphs expressing feelings, what happened, and clear boundaries/needs without hostility
+       * A warm, respectful closing sign-off (e.g. "Sincerely,", "Warmly,", "With care,")
+     "draft.title" MUST be formatted as "Letter to [Recipient]" (e.g. "Letter to Jordan"), NOT "Message for [Recipient]".
+     "draft.format" must be "personal_letter" by default.
+     "draft.formattedMessage" MUST contain the complete, beautifully composed letter ready to send.
+     "draft.strategyExplanation" must explain how the letter de-escalates conflict and protects boundaries.
+     "draft.howItMayBeReceived" must outline how the recipient is likely to perceive and react to this letter.
      Set "isDraftReady": true.
      NEVER return "draft": null when currentStage is 5 or 6! The user is in the drafting stage and must see the draft immediately.
-     In your conversational "reply", announce that you have written a draft, briefly summarize how it approaches the situation, and invite their thoughts or adjustments.
+     In your conversational "reply", announce that you have written a letter draft for them, briefly summarize how it approaches the situation, and invite their thoughts or adjustments.
 4. If essential context is still being explored (Stages 1-4) and requestDraftNow is false:
    Keep "draft" as null (unless retaining an existing draft), set isDraftReady: false, and ask the next thoughtful question in the interaction loop.
 5. Provide 2 to 3 helpful, conversational "suggestedReplies" that the user can click to answer easily.
-6. Provide "howItMayBeReceived" explaining how a recipient would likely perceive this message.
+6. Provide "howItMayBeReceived" explaining how a recipient would likely perceive this letter.
 7. Return strictly valid JSON.`;
 
   try {
@@ -343,10 +349,12 @@ CRITICAL INSTRUCTIONS:
       const whatHappened = ctx.whatHappened || 'Unspoken tension or avoided conversation';
 
       parsed.draft = {
-        title: `Message for ${recipient}`,
-        formattedMessage: `Hi ${recipient},\n\nI hope you're doing well. I wanted to reach out directly because I've been feeling some stress around ${whatHappened}, and good communication is really important to me.\n\nCould we find a quick moment to sync up? My goal is just to make sure we're on the same page and can move forward smoothly without any awkwardness or misunderstandings.\n\nLet me know what time works best for you.\n\nBest,`,
+        title: `Letter to ${recipient}`,
+        formattedMessage: `Dear ${recipient},\n\nI hope you are doing well. I wanted to write to you directly because I've been feeling some stress around ${whatHappened}, and good communication between us is really important to me.\n\nBecause I value our relationship and working together smoothly, I wanted to share my perspective honestly without creating awkwardness or putting undue pressure on either of us. Could we find a quiet moment to talk this through soon? My hope is that we can listen to each other and find a way forward that feels fair and respectful for both of us.\n\nWarmly,\n[Your Name]`,
         format: 'personal_letter',
         tone: 'honest_gentle',
+        salutation: `Dear ${recipient},`,
+        closing: 'Warmly,',
         strategyExplanation: "Opens with positive intent and uses 'I' statements to lower defensiveness, states the issue neutrally without blame, and sets a collaborative next step.",
         howItMayBeReceived: "The recipient is likely to feel invited rather than accused, significantly reducing friction.",
         factAssumptionNotes: [
@@ -371,9 +379,18 @@ CRITICAL INSTRUCTIONS:
     if (parsed.draft && parsed.draft.formattedMessage) {
       const text = parsed.draft.formattedMessage;
       const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+      const recipient = parsed.extractedContext?.recipientName || extractedContext?.recipientName || 'Recipient';
+
+      // Ensure title reflects a letter by default rather than a message
+      let title = parsed.draft.title;
+      if (!title || title.toLowerCase().startsWith('message for') || title.toLowerCase().startsWith('message to')) {
+        title = `Letter to ${recipient}`;
+      }
+
       parsed.draft = {
         ...parsed.draft,
         id: 'draft_' + Date.now(),
+        title,
         wordCount,
         readingTimeSeconds: Math.max(10, Math.round((wordCount / 180) * 60)),
         createdAt: Date.now(),
@@ -397,12 +414,14 @@ CRITICAL INSTRUCTIONS:
     const fallbackDraft = isDraftStep
       ? {
           id: 'draft_' + Date.now(),
-          title: `Message for ${recipient}`,
-          formattedMessage: `Hi ${recipient},\n\nI hope you're doing well. I wanted to reach out because I value open communication and felt we could sync up briefly about ${whatHappened}.\n\nMy priority is for us to be on the same page and handle this smoothly and respectfully together. Let me know when you might have a couple of minutes to touch base.\n\nBest,`,
+          title: `Letter to ${recipient}`,
+          formattedMessage: `Dear ${recipient},\n\nI hope you are doing well. I am writing to you directly because I value open communication and felt it would be best to share what has been on my mind regarding ${whatHappened}.\n\nIt is important to me that we can speak honestly and remain on the same page. Rather than letting things build up or feeling awkward around each other, I wanted to reach out so we can talk things through at a good time.\n\nCould we find a quiet moment to connect soon? I would really appreciate the chance to hear your thoughts and make sure we can move forward with mutual understanding and respect.\n\nWarmly,\n[Your Name]`,
           format: 'personal_letter' as const,
           tone: 'honest_gentle' as const,
+          salutation: `Dear ${recipient},`,
+          closing: 'Warmly,',
           strategyExplanation: "Uses 'I' statements to articulate needs clearly without accusations or defensiveness.",
-          howItMayBeReceived: "Approaches the recipient respectfully, making it easy to engage productively.",
+          howItMayBeReceived: "Approaches the recipient respectfully as a personal letter, making it easy to engage productively.",
           factAssumptionNotes: [
             {
               thought: "They're being difficult on purpose",
@@ -416,28 +435,28 @@ CRITICAL INSTRUCTIONS:
               howPreserved: "Establishes a constructive opportunity to connect without hostility",
             },
           ],
-          wordCount: 52,
-          readingTimeSeconds: 20,
+          wordCount: 112,
+          readingTimeSeconds: 40,
           createdAt: Date.now(),
         }
       : currentDraft;
 
     return res.json({
       reply: isDraftStep
-        ? `I have crafted a message draft for ${recipient} based on everything we discussed. You can view the full draft right here in the conversation and on the canvas to your right.`
+        ? `I have crafted a personal letter draft for ${recipient} based on everything we discussed. You can view the full letter right here in the conversation and on the canvas to your right.`
         : `Thank you for sharing that with me. Facing tension or feeling like you have to avoid someone can weigh heavily on you. To help us find the right words to say, could you tell me a little more about what happened and what outcome would give you peace of mind?`,
       currentStage: isDraftStep ? 5 : Math.min(6, (currentStage || 1) + 1),
       stageTitle: isDraftStep ? 'Drafting Letter' : 'Understanding Feelings & Context',
       suggestedReplies: isDraftStep
         ? [
-            'Can we make it slightly firmer?',
-            'Can we make it shorter for a text message?',
-            'This looks good to me.',
+            'Can we make the tone slightly firmer?',
+            'Can we adapt this into a short text message?',
+            'This letter looks good to me.',
           ]
         : [
             'I really want to avoid a major argument.',
             'I just want them to understand my side.',
-            'Can we draft a short message with what I shared?',
+            'Can we draft a letter with what I shared?',
           ],
       extractedContext: {
         ...extractedContext,
@@ -485,7 +504,9 @@ Requested Revision:
 Directive: ${revisionDirective || 'Custom'}
 User Feedback / Notes: ${customFeedback || 'Refine tone and clarity'}
 
-Revise the message to faithfully incorporate this feedback.
+Revise the letter draft to faithfully incorporate this feedback.
+DEFAULT FORMAT: The output should remain a well-structured personal letter ("personal_letter" with salutation, body paragraphs, and closing) unless the user explicitly requested a short text message/SMS.
+Title should be formatted as "Letter to [Recipient]" unless an email format with subject line is explicitly requested.
 Preserve the user's authentic voice, eliminate any unearned apologies if they do not wish to apologize, and maintain firm, respectful boundaries without escalation.
 Provide an updated explanation of the strategy and how the revision may be received.`;
 

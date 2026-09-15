@@ -15,6 +15,22 @@
   font-family: 'Crimson Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
+/* Subtle, elegant scrollbars for scrollable panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e7e5e4;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d6d3d1;
+}
+
 @media print {
   body {
     background: #ffffff !important;
