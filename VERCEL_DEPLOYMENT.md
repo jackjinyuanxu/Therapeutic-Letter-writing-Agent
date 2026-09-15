@@ -4,6 +4,17 @@ This guide explains how to deploy this application to **Vercel** and resolve com
 
 ---
 
+## Common Errors and Solutions
+
+### 1. `Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/task/server'`
+**Cause:**
+Vercel packages serverless functions strictly from the `/api` directory. Previously, `/api/index.ts` had `import app from '../server'`. Because `server.ts` was outside the `/api` folder in the root directory, Vercel did not bundle it into the Lambda execution environment, causing Node ESM to throw `ERR_MODULE_NOT_FOUND`.
+
+**Fix (Already implemented):**
+The Express application and all API endpoints are now placed directly inside `/api/index.ts` as a self-contained module with zero external root imports. `server.ts` now imports from `/api/index.ts` for local/container dev, ensuring both Vercel and local environments work seamlessly.
+
+---
+
 ## Why You Saw the Same Response Repeatedly
 
 When you import this repository into Vercel from GitHub, two things happen by default:
