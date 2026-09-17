@@ -17,10 +17,10 @@ export const ScenariosModal: React.FC<ScenariosModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full border border-stone-200 shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="ds-modal-overlay fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+      <div className="ds-modal max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50/80">
+        <div className="ds-modal-header px-6 py-4 border-b flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-amber-300" />
@@ -50,7 +50,7 @@ export const ScenariosModal: React.FC<ScenariosModalProps> = ({
                 onSelectScenario(scenario);
                 onClose();
               }}
-              className="p-4 rounded-xl border border-stone-200 hover:border-stone-400 hover:bg-stone-50 transition-all cursor-pointer group flex flex-col justify-between"
+              className="ds-card p-4 cursor-pointer group flex flex-col justify-between"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -84,7 +84,7 @@ export const ScenariosModal: React.FC<ScenariosModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500">
+        <div className="ds-modal-footer px-6 py-3.5 border-t flex items-center justify-between text-xs text-stone-600">
           <span className="flex items-center">
             <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-600" />
             Designed for genuine, safe, and de-escalated communication
@@ -92,7 +92,7 @@ export const ScenariosModal: React.FC<ScenariosModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg border border-stone-300 text-stone-700 hover:bg-white text-xs font-medium cursor-pointer"
+            className="ds-button px-3 py-1.5 text-xs cursor-pointer"
           >
             Cancel
           </button>

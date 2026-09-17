@@ -338,7 +338,7 @@ export const App: React.FC = () => {
     : false;
 
   return (
-    <div className="h-screen max-h-screen bg-stone-100/70 text-stone-900 flex flex-col font-sans overflow-hidden">
+    <div className="berkeley-shell h-screen max-h-screen flex flex-col font-sans overflow-hidden">
       {/* Header */}
       <Header
         onNewConversation={handleNewConversation}
@@ -351,15 +351,12 @@ export const App: React.FC = () => {
       />
 
       {/* Mobile Tab Switcher */}
-      <div className="lg:hidden shrink-0 px-4 pt-3 pb-2 bg-white border-b border-stone-200 flex items-center justify-center space-x-2">
+      <div className="ds-mobile-tabs lg:hidden shrink-0 px-4 py-3 flex items-center justify-center space-x-2">
         <button
           type="button"
           onClick={() => setMobileTab('chat')}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer ${
-            mobileTab === 'chat'
-              ? 'bg-stone-900 text-stone-100 shadow-xs'
-              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-          }`}
+          data-active={mobileTab === 'chat'}
+          className="ds-mobile-tab flex-1 py-2 px-3 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
         >
           <MessageSquare className="w-4 h-4" />
           <span>Agent Dialogue</span>
@@ -368,27 +365,24 @@ export const App: React.FC = () => {
         <button
           type="button"
           onClick={() => setMobileTab('canvas')}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer relative ${
-            mobileTab === 'canvas'
-              ? 'bg-stone-900 text-stone-100 shadow-xs'
-              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-          }`}
+          data-active={mobileTab === 'canvas'}
+          className="ds-mobile-tab flex-1 py-2 px-3 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer relative"
         >
           <FileText className="w-4 h-4" />
           <span>Letter Canvas</span>
           {currentDraft && (
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
           )}
         </button>
       </div>
 
       {/* Main Two-Panel Workspace */}
-      <main className="flex-1 min-h-0 max-w-7xl w-full mx-auto p-2 sm:p-4 md:p-5 flex flex-col overflow-hidden">
+      <main className="ds-page-frame flex-1 min-h-0 w-full p-2 sm:p-4 md:p-[25px] flex flex-col overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 md:gap-5 flex-1 min-h-0 h-full">
           {/* Left Panel: Agent Conversation */}
           <section
             aria-label="Agent Conversation"
-            className={`lg:col-span-7 flex flex-col h-full min-h-0 overflow-hidden ${
+            className={`lg:col-span-7 flex flex-col h-full min-h-0 min-w-0 overflow-hidden ${
               mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'
             }`}
           >
@@ -411,7 +405,7 @@ export const App: React.FC = () => {
           {/* Right Panel: Working Letter Canvas & Analysis */}
           <section
             aria-label="Letter Canvas and Analysis"
-            className={`lg:col-span-5 flex flex-col h-full min-h-0 overflow-hidden ${
+            className={`lg:col-span-5 flex flex-col h-full min-h-0 min-w-0 overflow-hidden ${
               mobileTab === 'chat' ? 'hidden lg:flex' : 'flex'
             }`}
           >

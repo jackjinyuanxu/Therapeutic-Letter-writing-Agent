@@ -122,24 +122,20 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
     );
 
     return (
-      <div className="flex flex-col h-full min-h-0 bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
+      <div className="ds-panel flex flex-col h-full min-h-0 overflow-hidden">
         {/* Header */}
-        <div className="shrink-0 p-5 sm:p-6 pb-4 border-b border-stone-200 flex items-center justify-between">
+        <div className="ds-panel-bar shrink-0 p-5 sm:p-6 pb-4 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center">
-              <Compass className="w-5 h-5 text-amber-600" />
+            <div className="ds-step-badge w-9 h-9 flex items-center justify-center">
+              <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-stone-900">Communication Canvas</h2>
+              <h2 className="text-base font-bold">Communication Canvas</h2>
               <p className="text-xs text-stone-500">Live draft & situational understanding</p>
             </div>
           </div>
           <span
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
-              currentStage >= 5
-                ? 'bg-amber-50 text-amber-800 border-amber-300 font-semibold'
-                : 'bg-stone-100 text-stone-600 border-stone-200'
-            }`}
+            className="ds-chip px-2.5 py-1 text-xs"
           >
             {currentStage >= 5 ? 'Stage 5: Drafting Ready' : `Stage ${currentStage}: Exploring Context`}
           </span>
@@ -149,7 +145,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-5 overscroll-contain">
           {/* If at Stage 5 and awaiting first generation */}
           {currentStage >= 5 && (
-            <div className="p-4 rounded-xl bg-amber-50/90 border border-amber-200 text-stone-800">
+            <div className="ds-highlight p-4">
               <div className="flex items-start space-x-3">
                 <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div className="space-y-1 flex-1">
@@ -163,7 +159,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                     <button
                       type="button"
                       onClick={onRequestDraftNow}
-                      className="px-3.5 py-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-50 text-xs font-semibold flex items-center space-x-1.5 cursor-pointer shadow-xs transition-colors"
+                      className="ds-primary-button px-3.5 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                       <span>Generate Draft Letter Now</span>
@@ -176,8 +172,8 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
           {/* Understood Context Dashboard */}
           <div className="space-y-4">
-            <div className="bg-stone-50/80 rounded-xl p-4 border border-stone-200/80">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3 flex items-center">
+            <div className="ds-card p-4">
+              <h3 className="ds-kicker px-1.5 py-0.5 mb-3 flex items-center">
                 <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-stone-700" />
                 Agent's Current Understanding
               </h3>
@@ -242,7 +238,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             </div>
 
             {/* Interaction Loop Guidance */}
-            <div className="border border-dashed border-stone-300 rounded-xl p-5 text-center bg-stone-50/40">
+            <div className="ds-card p-5 text-center">
               <div className="w-10 h-10 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400 mb-3">
                 <FileText className="w-5 h-5" />
               </div>
@@ -259,7 +255,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                 type="button"
                 id="btn-draft-now-empty-state"
                 onClick={onRequestDraftNow}
-                className="inline-flex items-center px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-100 text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                className="ds-primary-button inline-flex items-center px-4 py-2 text-xs cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
                 Draft Letter Now with Available Details
@@ -269,7 +265,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         </div>
 
         {/* Footer Guarantee */}
-        <div className="shrink-0 p-4 border-t border-stone-200 flex items-center justify-between text-[11px] text-stone-500 bg-stone-50/50">
+        <div className="ds-mono shrink-0 p-4 border-t border-blue-600 flex items-center justify-between text-[11px] text-stone-600 bg-white">
           <span>Safe • Non-judgmental • Authentic Voice</span>
           <span>No unearned apologies</span>
         </div>
@@ -280,15 +276,15 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
   const FormatIcon = FORMAT_ICONS[draft.format] || FileText;
 
   return (
-    <div className="flex flex-col h-full min-h-0 bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
+    <div className="ds-panel flex flex-col h-full min-h-0 overflow-hidden">
       {/* Top Bar */}
-      <div className="shrink-0 px-5 py-3.5 bg-stone-50/90 border-b border-stone-200 flex flex-wrap items-center justify-between gap-2">
+      <div className="ds-panel-bar shrink-0 px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center space-x-2.5">
-          <div className="p-1.5 rounded-lg bg-stone-200/80 text-stone-700">
+          <div className="ds-step-badge p-1.5">
             <FormatIcon className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-stone-900 truncate max-w-[220px] sm:max-w-xs">
+            <h2 className="text-sm font-bold truncate max-w-[220px] sm:max-w-xs">
               {draft.title}
             </h2>
             <div className="flex items-center space-x-2 text-[11px] text-stone-500">
@@ -307,11 +303,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             type="button"
             id="btn-copy-draft"
             onClick={handleCopy}
-            className={`inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-              copied
-                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                : 'bg-white hover:bg-stone-100 text-stone-700 border border-stone-200'
-            }`}
+            className="ds-small-button inline-flex items-center px-2.5 py-1.5 text-xs cursor-pointer"
             title="Copy letter to clipboard"
           >
             {copied ? (
@@ -331,11 +323,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             type="button"
             id="btn-save-draft"
             onClick={() => onSaveDraft(draft)}
-            className={`inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-              isDraftSaved
-                ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                : 'bg-white hover:bg-stone-100 text-stone-700 border border-stone-200'
-            }`}
+            className="ds-small-button inline-flex items-center px-2.5 py-1.5 text-xs cursor-pointer"
             title="Save to drafts"
           >
             {isDraftSaved ? (
@@ -355,7 +343,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             type="button"
             id="btn-download-draft"
             onClick={handleDownload}
-            className="p-1.5 rounded-lg bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 transition-colors cursor-pointer"
+            className="ds-icon-button p-1.5 cursor-pointer"
             title="Download .txt"
           >
             <Download className="w-4 h-4 text-stone-600" />
@@ -365,7 +353,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             type="button"
             id="btn-print-draft"
             onClick={handlePrint}
-            className="p-1.5 rounded-lg bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 transition-colors cursor-pointer"
+            className="ds-icon-button p-1.5 cursor-pointer"
             title="Print or Save PDF"
           >
             <Printer className="w-4 h-4 text-stone-600" />
@@ -374,7 +362,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="shrink-0 px-5 border-b border-stone-200 bg-white flex space-x-6 text-xs font-semibold">
+      <div className="ds-tabs shrink-0 px-5 flex space-x-6 text-xs font-semibold">
         <button
           type="button"
           onClick={() => setActiveTab('letter')}
@@ -426,7 +414,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             )}
 
             {/* Letter Paper Container */}
-            <div className="bg-white rounded-xl border border-stone-200/90 p-6 sm:p-8 shadow-xs relative print:border-none print:shadow-none">
+            <div className="ds-document p-6 sm:p-8 relative print:border-none print:shadow-none">
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-stone-100 text-xs text-stone-400">
                 <span>{FORMAT_LABELS[draft.format]}</span>
                 <button
@@ -453,7 +441,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                   rows={14}
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
-                  className="w-full text-sm sm:text-base font-serif leading-relaxed text-stone-900 p-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400"
+                  className="ds-input w-full text-sm sm:text-base font-serif leading-relaxed p-2 border-2 focus:outline-none"
                 />
               ) : (
                 <div className="font-serif text-sm sm:text-base text-stone-900 leading-relaxed whitespace-pre-wrap selection:bg-amber-100">
@@ -463,7 +451,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             </div>
 
             {/* Quick Refine Chips */}
-            <div className="bg-white p-4 rounded-xl border border-stone-200 space-y-2">
+            <div className="ds-card p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-700">Quick Revisions:</span>
                 <span className="text-[11px] text-stone-400">One-click agent refinement</span>
@@ -477,7 +465,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                       'Make the boundaries firmer and clear without attacking or escalating'
                     )
                   }
-                  className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition-colors cursor-pointer disabled:opacity-50"
+                  className="ds-chip text-xs px-3 py-1.5 cursor-pointer disabled:opacity-50"
                 >
                   🛡️ Make boundary firmer
                 </button>
@@ -490,7 +478,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                       'Soften the tone to be gentler and more reconnecting, while keeping honesty'
                     )
                   }
-                  className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition-colors cursor-pointer disabled:opacity-50"
+                  className="ds-chip text-xs px-3 py-1.5 cursor-pointer disabled:opacity-50"
                 >
                   🌿 Soften tone & warm up
                 </button>
@@ -503,7 +491,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                       'Make it shorter and more concise, suitable for a quick SMS or text message'
                     )
                   }
-                  className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition-colors cursor-pointer disabled:opacity-50"
+                  className="ds-chip text-xs px-3 py-1.5 cursor-pointer disabled:opacity-50"
                 >
                   💬 Shorten for Text Message
                 </button>
@@ -516,7 +504,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                       'Ensure all defensiveness is dialed down and express feelings purely as personal I-statements'
                     )
                   }
-                  className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition-colors cursor-pointer disabled:opacity-50"
+                  className="ds-chip text-xs px-3 py-1.5 cursor-pointer disabled:opacity-50"
                 >
                   🕊️ De-escalate defensiveness
                 </button>
@@ -527,7 +515,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
         {activeTab === 'reception' && (
           <div className="space-y-4">
-            <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-5">
+            <div className="ds-highlight p-5">
               <h3 className="text-sm font-bold text-amber-950 flex items-center mb-2">
                 <Sparkles className="w-4 h-4 mr-2 text-amber-700" />
                 How the Recipient May Receive This Letter
@@ -538,7 +526,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-stone-200 space-y-3">
+            <div className="ds-card p-5 space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                 Key Communication Safeguards
               </h4>
@@ -571,7 +559,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
         {activeTab === 'strategy' && (
           <div className="space-y-4">
-            <div className="bg-white p-5 rounded-xl border border-stone-200">
+            <div className="ds-card p-5">
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                 Communication Strategy
               </h3>
@@ -582,7 +570,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
             {/* Facts vs Assumptions Translation */}
             {draft.factAssumptionNotes && draft.factAssumptionNotes.length > 0 && (
-              <div className="bg-white p-5 rounded-xl border border-stone-200 space-y-3">
+              <div className="ds-card p-5 space-y-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Facts vs. Assumptions De-escalation
                 </h3>
@@ -611,7 +599,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
             {/* Boundaries Preserved */}
             {draft.boundariesPreserved && draft.boundariesPreserved.length > 0 && (
-              <div className="bg-white p-5 rounded-xl border border-stone-200 space-y-2">
+              <div className="ds-card p-5 space-y-2">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Boundaries Preserved
                 </h3>
