@@ -1,6 +1,16 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import express from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
+
+// Vite uses .env.local for local secrets, while dotenv/config only loads .env.
+// Read only the Gemini key from .env.local so downloaded Vercel metadata does
+// not make the local server behave as though it is running on Vercel.
+const localEnv: Record<string, string> = {};
+dotenv.config({ path: '.env.local', processEnv: localEnv, quiet: true });
+if (!process.env.GEMINI_API_KEY && localEnv.GEMINI_API_KEY) {
+  process.env.GEMINI_API_KEY = localEnv.GEMINI_API_KEY;
+}
+dotenv.config({ quiet: true });
 
 const app = express();
 
