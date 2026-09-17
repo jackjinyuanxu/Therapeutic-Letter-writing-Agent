@@ -77,7 +77,7 @@ Saved letters stay in the current browser's local storage. There is no user acco
 
 - **React and TypeScript** build the interactive interface.
 - **Vite** prepares the website for development and deployment.
-- **Tailwind CSS** provides the visual styling and responsive layout.
+- **Tailwind CSS and a reusable custom design system** provide the colors, typography, layout, and responsive behavior.
 - **Motion** adds interface animation, and **Lucide** provides icons.
 - **Express** handles requests between the website and the AI service.
 - **Google Gemini**, through Google's Gen AI SDK, generates questions, structured context, drafts, and revisions.
