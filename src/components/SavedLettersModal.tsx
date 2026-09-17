@@ -32,10 +32,10 @@ export const SavedLettersModal: React.FC<SavedLettersModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full border border-stone-200 shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="ds-modal-overlay fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+      <div className="ds-modal max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50/80">
+        <div className="ds-modal-header px-6 py-4 border-b flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center">
               <FolderArchive className="w-4 h-4 text-amber-300" />
@@ -70,7 +70,7 @@ export const SavedLettersModal: React.FC<SavedLettersModalProps> = ({
             savedDrafts.map((draft) => (
               <div
                 key={draft.id}
-                className="p-4 rounded-xl border border-stone-200 hover:border-stone-300 bg-stone-50/40 hover:bg-white transition-all flex flex-col justify-between space-y-3"
+                className="ds-card p-4 flex flex-col justify-between space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -100,7 +100,7 @@ export const SavedLettersModal: React.FC<SavedLettersModalProps> = ({
                     <button
                       type="button"
                       onClick={() => onDeleteDraft(draft.id)}
-                      className="p-1.5 rounded-md hover:bg-rose-50 text-stone-400 hover:text-rose-600 transition-colors cursor-pointer"
+                      className="ds-danger-button p-1.5 cursor-pointer"
                       title="Delete saved draft"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -128,11 +128,11 @@ export const SavedLettersModal: React.FC<SavedLettersModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 bg-stone-50 border-t border-stone-200 flex justify-end">
+        <div className="ds-modal-footer px-6 py-3.5 border-t flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-stone-900 text-stone-100 hover:bg-stone-800 text-xs font-semibold cursor-pointer"
+            className="ds-primary-button px-4 py-2 text-xs cursor-pointer"
           >
             Close
           </button>

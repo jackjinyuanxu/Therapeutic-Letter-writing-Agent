@@ -109,19 +109,19 @@ export const AgentChat: React.FC<AgentChatProps> = ({
   const hasUserMessages = messages.some((m) => m.role === 'user');
 
   return (
-    <div className="flex flex-col h-full min-h-0 bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
+    <div className="ds-panel flex flex-col h-full min-h-0 overflow-hidden">
       {/* Stage Stepper Header */}
-      <div className="shrink-0 px-4 py-3 bg-stone-50/80 border-b border-stone-200">
+      <div className="ds-panel-bar shrink-0 px-4 py-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-stone-900 text-amber-300 text-xs font-bold">
+            <span className="ds-step-badge inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold">
               {currentStage}
             </span>
-            <span className="text-xs font-semibold text-stone-900 tracking-tight">
+            <span className="ds-kicker px-1.5 py-0.5">
               {stageTitle || 'Interaction Loop'}
             </span>
           </div>
-          <span className="text-[11px] text-stone-500 font-medium">
+          <span className="ds-mono text-[11px] text-blue-700 font-medium">
             Step {currentStage} of 6
           </span>
         </div>
@@ -134,13 +134,9 @@ export const AgentChat: React.FC<AgentChatProps> = ({
             return (
               <div key={step.stage} className="flex flex-col items-center group relative">
                 <div
-                  className={`h-1.5 w-full rounded-full transition-all duration-300 ${
-                    isCompleted
-                      ? 'bg-stone-800'
-                      : isCurrent
-                      ? 'bg-amber-500 ring-2 ring-amber-200'
-                      : 'bg-stone-200'
-                  }`}
+                  data-complete={isCompleted}
+                  data-current={isCurrent}
+                  className="ds-progress-track w-full transition-all duration-300"
                 />
                 <span
                   className={`text-[10px] mt-1 truncate max-w-full font-medium ${
@@ -194,11 +190,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
 
                 {/* Message Content */}
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                    isAssistant
-                      ? 'bg-stone-100/90 text-stone-900 border border-stone-200/70 rounded-tl-xs'
-                      : 'bg-stone-900 text-stone-50 rounded-tr-xs shadow-xs'
-                  }`}
+                  className={`${isAssistant ? 'ds-assistant-message' : 'ds-user-message'} px-4 py-3 text-sm leading-relaxed`}
                 >
                   {/* Assistant Tag */}
                   {isAssistant && (
@@ -225,11 +217,11 @@ export const AgentChat: React.FC<AgentChatProps> = ({
 
                     return (
                       <div className="mt-3.5 pt-3 border-t border-stone-200/80">
-                        <div className="bg-white/90 rounded-xl border border-stone-200/90 p-3.5 sm:p-4 text-stone-800 space-y-3 shadow-2xs">
+                        <div className="ds-card p-3.5 sm:p-4 text-stone-800 space-y-3">
                           <div className="flex items-center justify-between flex-wrap gap-2">
                             <div className="flex items-center space-x-2">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-stone-900 text-stone-100">
-                                <FileText className="w-3 h-3 mr-1 text-amber-400" />
+                              <span className="ds-kicker px-2 py-0.5">
+                                <FileText className="w-3 h-3 mr-1" />
                                 {draftToShow.title || 'Generated Letter Draft'}
                               </span>
                               <span className="text-[11px] px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 font-medium border border-stone-200">
@@ -241,7 +233,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleCopyDraft(draftToShow.formattedMessage, draftToShow.id)}
-                                className="px-2 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors text-xs flex items-center space-x-1 cursor-pointer border border-stone-200"
+                                className="ds-small-button px-2 py-1 text-xs flex items-center space-x-1 cursor-pointer"
                                 title="Copy letter to clipboard"
                               >
                                 {isCopied ? (
@@ -261,7 +253,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                                 <button
                                   type="button"
                                   onClick={onViewCanvas}
-                                  className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-50 transition-colors text-[11px] font-medium flex items-center space-x-1 cursor-pointer shadow-2xs"
+                                  className="ds-primary-button px-2.5 py-1 text-[11px] flex items-center space-x-1 cursor-pointer"
                                 >
                                   <span>Open Full Canvas</span>
                                   <ExternalLink className="w-3 h-3 text-stone-300" />
@@ -277,12 +269,12 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                             </div>
                           )}
 
-                          <div className="bg-stone-50/70 rounded-lg p-3.5 border border-stone-200 font-serif text-sm text-stone-900 leading-relaxed whitespace-pre-wrap selection:bg-amber-100">
+                          <div className="ds-document p-3.5 font-serif text-sm text-stone-900 leading-relaxed whitespace-pre-wrap">
                             {draftToShow.formattedMessage}
                           </div>
 
                           {draftToShow.strategyExplanation && (
-                            <div className="text-xs text-stone-600 bg-amber-50/60 border border-amber-200/60 rounded-lg p-2.5 flex items-start space-x-2">
+                            <div className="ds-highlight text-xs p-2.5 flex items-start space-x-2">
                               <Sparkles className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
                               <div>
                                 <span className="font-semibold text-amber-900">Why this works: </span>
@@ -297,21 +289,21 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                               <button
                                 type="button"
                                 onClick={() => onReviseDraft('Make the tone slightly softer and more approachable')}
-                                className="text-[11px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-200 cursor-pointer transition-colors"
+                                className="ds-chip text-[11px] px-2 py-0.5 cursor-pointer"
                               >
                                 Softer tone
                               </button>
                               <button
                                 type="button"
                                 onClick={() => onReviseDraft('Make boundaries clearer and firmer without hostility')}
-                                className="text-[11px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-200 cursor-pointer transition-colors"
+                                className="ds-chip text-[11px] px-2 py-0.5 cursor-pointer"
                               >
                                 Firmer boundary
                               </button>
                               <button
                                 type="button"
                                 onClick={() => onReviseDraft('Shorten and adapt into a concise text message')}
-                                className="text-[11px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-200 cursor-pointer transition-colors"
+                                className="ds-chip text-[11px] px-2 py-0.5 cursor-pointer"
                               >
                                 Shorten for SMS
                               </button>
@@ -336,7 +328,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                       type="button"
                       onClick={() => handleSuggestionClick(reply)}
                       disabled={isThinking}
-                      className="text-xs px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300/80 transition-colors text-left cursor-pointer flex items-center space-x-1"
+                      className="ds-chip text-xs px-3 py-1.5 text-left cursor-pointer flex items-center space-x-1"
                     >
                       <span>{reply}</span>
                       <ArrowRight className="w-3 h-3 text-stone-400" />
@@ -375,7 +367,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                   key={scenario.id}
                   type="button"
                   onClick={() => onSelectScenario(scenario)}
-                  className="p-2.5 rounded-xl border border-stone-200 hover:border-stone-400 hover:bg-stone-50 text-left transition-all group cursor-pointer"
+                  className="ds-card p-2.5 text-left group cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-stone-900 group-hover:text-amber-700">
@@ -398,7 +390,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="shrink-0 p-3 sm:p-4 bg-stone-50/90 border-t border-stone-200">
+      <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-blue-600">
         {/* Action bar above input */}
         <div className="flex items-center justify-between mb-2 px-1">
           <div className="flex items-center space-x-2 text-[11px] text-stone-500">
@@ -411,7 +403,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
               type="button"
               onClick={onRequestDraftNow}
               disabled={isThinking}
-              className="inline-flex items-center text-xs font-medium text-amber-700 hover:text-amber-900 hover:underline cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center text-xs font-medium text-blue-700 hover:text-black hover:underline cursor-pointer disabled:opacity-50"
             >
               <Sparkles className="w-3.5 h-3.5 mr-1 text-amber-600" />
               {hasDraft ? 'Regenerate draft now' : 'Draft letter with what we have'}
@@ -420,7 +412,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
         </div>
 
         {/* Textarea Input */}
-        <div className="relative flex items-end rounded-xl bg-white border border-stone-300 focus-within:border-stone-600 focus-within:ring-2 focus-within:ring-stone-200 shadow-2xs transition-all">
+        <div className="ds-input-frame relative flex items-end transition-all">
           <textarea
             ref={textareaRef}
             rows={1}
@@ -429,14 +421,14 @@ export const AgentChat: React.FC<AgentChatProps> = ({
             onKeyDown={handleKeyDown}
             placeholder="Share what happened, how you feel, or who this is about... (Shift+Enter for new line)"
             disabled={isThinking}
-            className="w-full py-3 pl-3.5 pr-12 text-sm text-stone-900 placeholder:text-stone-400 bg-transparent resize-none focus:outline-none min-h-[44px] max-h-[140px]"
+            className="ds-input w-full py-3 pl-3.5 pr-12 text-sm bg-transparent resize-none focus:outline-none min-h-[44px] max-h-[140px]"
           />
           <button
             type="button"
             id="btn-send-agent-message"
             onClick={handleSend}
             disabled={!inputValue.trim() || isThinking}
-            className="absolute right-2 bottom-2 w-8 h-8 rounded-lg bg-stone-900 text-stone-100 hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-stone-900 flex items-center justify-center transition-colors cursor-pointer"
+            className="ds-icon-button absolute right-2 bottom-2 w-8 h-8 flex items-center justify-center cursor-pointer"
             title="Send message (Enter)"
           >
             <Send className="w-4 h-4" />
