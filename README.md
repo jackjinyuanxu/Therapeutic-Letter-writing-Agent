@@ -4,7 +4,7 @@ Therapeutic Letter Writer is an AI-assisted communication prototype for people w
 
 **[Try the live prototype](https://therapeutic-letter-writing-agent.vercel.app/)**
 
-![The Therapeutic Letter Writer conversation and letter workspace](therapeutic-letter-writing-agent.png)
+![The Therapeutic Letter Writer conversation and letter workspace](therapeutic-letter-writing-agent-design-system.png)
 
 > **Prototype notice:** This is an exploratory class and portfolio project, not a therapy service or a finished product. It should not be used as a substitute for professional mental-health support, crisis help, legal advice, or personal judgment.
 
